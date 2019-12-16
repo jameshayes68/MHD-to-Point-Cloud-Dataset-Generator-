@@ -1,9 +1,10 @@
 # MHD-to-Point-Cloud-Dataset-Generator-
-STL-to-Point-Cloud-Dataset-Generator-
-There are a number of freely available datasets of MHD files (for example https://luna16.grand-challenge.org/). These can be useful for creating training datasets for machine vision experimentation. It is intended that the notebook provided can be used to generate such a training dataset from a folder of STL files Specifically, the notebook contains the code that does the following
+MHD is a file format often used for storing 3D medical image data. In many cases the MHD file format is selected over DICOM for freely downloadable datasets (e.g. https://luna16.grand-challenge.org/). It is intended that the notebook provided can be used to open such files and segment them into areas of interest. Specifically, the notebook contains the code that does the following
 
-It opens a working directory subfolder of MHD files, randomly selects a file within the folder and generates an array of the vectors of that STL file
-Using the vectors of the STL file a number of randomly generated points over the surface of 3D model are generated
-The randomly generated points are rotated by a random number of degrees about a randomly generated axis originating from the origin.
-The randomly generated points are scaled such that the 3D model will fit within a cube of defined size
-Steps 1 to 4 are repeated. Each time that this process is repeated the x,y & z coordinates of the randomly generated surface samples are appended as a row of an array. Upon completion this array is saved as a csv file within the working directory.
+It opens a working directory subfolder of NRRD files, randomly selects an NRRD file within the folder and generates an array 3D array representation
+Batched K-Means Clustering is applied so as to segment the image based on color or Hounsfield unit. This breaks the image up into anatomical regions of similar opacity. 
+Based on user input certain regions/clusters are identified as of interest. All other regions are ignored going forward.
+DBSCAN Clustering is applied to each of the regions/clusters identified as of interest. This breaks anatomical regions of similar opacity up into seperate regions if they are not connected. In addition it also identifies noise or outliers
+These subregions/clusters are reviewed and the user identifies areas of interest. All other regions are ignored going forward.
+Any data points classified as noise are reclassified based on the most common lable of their neighbours.
+The resulting 3D array is converted to an array of xyz coordinates and saved as a csv file within the working directory.
